@@ -3,48 +3,77 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HLS Player</title>
+    <title>Streaming Live</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-      body {
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      #video-container {
+        width: 100%;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #000;
+        background-color: black; /* Optional: Black background */
       }
-      video {
-        width: 80%;
+      #video {
+        width: 100%;
         height: auto;
-        background-color: #000;
+      }
+      #text-below {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 16px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        padding: 5px 10px;
+        border-radius: 5px;
       }
     </style>
   </head>
   <body>
-    <video id="video" controls></video>
-
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <div id="video-container">
+      <video id="video" controls></video>
+    </div>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", function () {
         var video = document.getElementById("video");
-        var videoSrc =
-          "https://a86.azplay.me/hls/streama224140/index.m3u8?cst=ae9a33d838abd885e3ef24c22231aa5f";
-
         if (Hls.isSupported()) {
           var hls = new Hls();
-          hls.loadSource(videoSrc);
+          hls.loadSource("https://a86.azplay.me/hls/streama224140/index.m3u8?cst=ae9a33d838abd885e3ef24c22231aa5f");
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, function () {
             video.play();
           });
         } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-          video.src = videoSrc;
-          video.addEventListener("loadedmetadata", function () {
+          video.src = "https://a73.azplay.me/hls/streama224169/index.m3u8?cst=a90ae3ae095c5393ee47fa46b232091e";
+          video.addEventListener("canplay", function () {
             video.play();
           });
-        } else {
-          alert("HLS.js not supported in this browser.");
         }
+
+        // Function to make the video fullscreen
+        function makeVideoFullscreen() {
+          var container = document.getElementById("video-container");
+          container.style.width = "100%";
+          container.style.height = "100%";
+          container.style.display = "flex";
+          container.style.justifyContent = "center";
+          container.style.alignItems = "center";
+        }
+
+        // Call the function to make video fullscreen on page load
+        makeVideoFullscreen();
+
+        // Handle resize events to keep video fullscreen
+        window.addEventListener("resize", makeVideoFullscreen);
       });
     </script>
   </body>
