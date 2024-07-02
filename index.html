@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HLS Player</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #000;
+      }
+      video {
+        width: 80%;
+        height: auto;
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <video id="video" controls></video>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        var video = document.getElementById("video");
+        var videoSrc =
+          "https://a86.azplay.me/hls/streama224140/index.m3u8?cst=ae9a33d838abd885e3ef24c22231aa5f";
+
+        if (Hls.isSupported()) {
+          var hls = new Hls();
+          hls.loadSource(videoSrc);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            video.play();
+          });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = videoSrc;
+          video.addEventListener("loadedmetadata", function () {
+            video.play();
+          });
+        } else {
+          alert("HLS.js not supported in this browser.");
+        }
+      });
+    </script>
+  </body>
+</html>
